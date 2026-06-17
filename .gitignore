@@ -1,0 +1,89 @@
+# =========================
+# IntelliJ IDEA
+# =========================
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# =========================
+# Java / Spring Boot
+# =========================
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# Build outputs
+target/
+build/
+dist/
+classes/
+
+# Spring Boot / logs
+logs/
+*.log
+*.log.*
+hs_err_pid*
+replay_pid*
+
+# =========================
+# Maven / Gradle
+# =========================
+.mvn/wrapper/maven-wrapper.jar
+.gradle/
+.gradle-cache/
+!gradle/wrapper/gradle-wrapper.jar
+
+# =========================
+# Environment files
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Docker
+# =========================
+docker-compose.override.yml
+docker-compose.local.yml
+
+# =========================
+# Liquibase / DB local files
+# =========================
+liquibase-output/
+liquibase.log
+
+# =========================
+# OS / File system junk
+# =========================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# =========================
+# Test / coverage outputs
+# =========================
+surefire-reports/
+failsafe-reports/
+coverage/
+jacoco/
+jacoco.exec
+*.exec
+
+# =========================
+# Temp files
+# =========================
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+
+# =========================
+# IDE-specific caches
+# =========================
+.idea_modules/
+.vscode/
