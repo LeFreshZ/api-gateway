@@ -22,3 +22,5 @@ spring:
                 - Path=/orders/**,/items/**
 auth-service:
   url: ${AUTH_SERVICE_URL}
+user-service:
+  url: ${USER_SERVICE_URL}

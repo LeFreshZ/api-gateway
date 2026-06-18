@@ -3,7 +3,7 @@ package com.innowise.apigateway.filter;
 import com.innowise.apigateway.dto.ValidateRequest;
 import com.innowise.apigateway.dto.ValidateResponse;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -24,13 +24,11 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
       "/auth/refresh"
   );
 
-  private final WebClient client;
+  private final WebClient webClient;
 
-  public JwtGlobalFilter(
-      WebClient.Builder builder,
-      @Value("${auth-service.url}") String authServiceUrl) {
+  public JwtGlobalFilter(@Qualifier("authServiceWebClient") WebClient webClient) {
 
-    this.client = builder.baseUrl(authServiceUrl).build();
+    this.webClient = webClient;
   }
 
   @Override
@@ -49,7 +47,7 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
 
     String token = authHeader.substring(7);
 
-    return client.post()
+    return webClient.post()
         .uri("/auth/validate")
         .bodyValue(new ValidateRequest(token))
         .retrieve()
@@ -66,7 +64,7 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
 
           return chain.filter(exchange.mutate().request(mutatedRequest).build());
         })
-        .onErrorResume(throwable -> unauthorized(exchange));
+        .onErrorResume(error -> unauthorized(exchange));
   }
 
   private Mono<Void> unauthorized(ServerWebExchange exchange) {
