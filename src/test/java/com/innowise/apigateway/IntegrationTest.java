@@ -37,6 +37,8 @@ public abstract class IntegrationTest {
     registry.add("AUTH_SERVICE_URL", () -> "http://localhost:8089");
     registry.add("USER_SERVICE_URL", () -> "http://localhost:8089");
     registry.add("ORDER_SERVICE_URL", () -> "http://localhost:8089");
+
+    registry.add("internal.secret", () -> "testSecret");
   }
 
   @Autowired

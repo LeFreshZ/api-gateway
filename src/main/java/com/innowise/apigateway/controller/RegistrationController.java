@@ -8,6 +8,7 @@ import com.innowise.apigateway.dto.TokensResponse;
 import com.innowise.apigateway.dto.UserResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,9 @@ public class RegistrationController {
 
   private final WebClient userServiceWebClient;
   private final WebClient authServiceWebClient;
+
+  @Value("${internal.secret}")
+  private String internalSecret;
 
   public RegistrationController(
       @Qualifier("userServiceWebClient") WebClient userServiceWebClient,
@@ -45,6 +49,7 @@ public class RegistrationController {
 
     return userServiceWebClient.post()
         .uri("/users")
+        .header("X-Internal-Secret", internalSecret)
         .bodyValue(createUserRequest)
         .retrieve()
         .bodyToMono(UserResponse.class)
@@ -72,6 +77,7 @@ public class RegistrationController {
   private Mono<Void> rollbackUser(Long userId) {
     return userServiceWebClient.delete()
         .uri("/users/{id}", userId)
+        .header("X-Internal-Secret", internalSecret)
         .retrieve()
         .bodyToMono(Void.class)
         .onErrorResume(error -> Mono.empty());

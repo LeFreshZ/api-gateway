@@ -20,8 +20,7 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
 
   private static final List<String> OPEN_PATHS = List.of(
       "/auth/login",
-      "/auth/register",
-      "/auth/refresh"
+      "/auth/register"
   );
 
   private final WebClient webClient;
@@ -35,7 +34,7 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
     String path = exchange.getRequest().getURI().getPath();
 
-    if (OPEN_PATHS.stream().anyMatch(path::startsWith)) {
+    if (OPEN_PATHS.contains(path)) {
       return chain.filter(exchange);
     }
 

@@ -59,12 +59,12 @@ class JwtGlobalFilterTest extends IntegrationTest {
   void shouldPassLoginWithoutToken() throws JsonProcessingException {
     String request = createLoginRequest("test", "test");
 
-    stubFor(post(urlEqualTo("/auth/refresh"))
+    stubFor(post(urlEqualTo("/auth/login"))
         .willReturn(aResponse()
             .withStatus(200)));
 
     webTestClient.post()
-        .uri("/auth/refresh")
+        .uri("/auth/login")
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(request)
         .exchange()
@@ -72,13 +72,16 @@ class JwtGlobalFilterTest extends IntegrationTest {
   }
 
   @Test
-  void shouldPassRefreshWithoutToken() {
+  void shouldPassRefreshWithValidToken() throws JsonProcessingException {
+    stubValidateToken(true, 1L, "ROLE_USER");
+
     stubFor(post(urlEqualTo("/auth/refresh"))
         .willReturn(aResponse()
             .withStatus(200)));
 
     webTestClient.post()
         .uri("/auth/refresh")
+        .header("Authorization", "Bearer valid-token")
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue("{\"refreshToken\":\"token\"}")
         .exchange()
