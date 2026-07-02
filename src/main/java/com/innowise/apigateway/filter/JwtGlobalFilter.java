@@ -20,7 +20,8 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
 
   private static final List<String> OPEN_PATHS = List.of(
       "/auth/login",
-      "/auth/register"
+      "/auth/register",
+      "/.well-known/jwks.json"
   );
 
   private final WebClient webClient;
