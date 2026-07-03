@@ -9,7 +9,7 @@ spring:
             - id: auth-service
               uri: ${AUTH_SERVICE_URL}
               predicates:
-                - Path=/auth/login,/auth/refresh,/.well-known/jwks.json
+                - Path=/auth/login,/auth/refresh
 
             - id: user-service
               uri: ${USER_SERVICE_URL}
