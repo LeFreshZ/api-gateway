@@ -183,6 +183,7 @@ services:
       - auth-service
       - user-service
       - order-service
+      - payment-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
