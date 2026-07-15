@@ -6,6 +6,8 @@ import com.innowise.apigateway.dto.RegisterRequest;
 import com.innowise.apigateway.dto.SaveCredentialsRequest;
 import com.innowise.apigateway.dto.TokensResponse;
 import com.innowise.apigateway.dto.UserResponse;
+import com.innowise.apigateway.exception.AuthServiceUnavailableException;
+import com.innowise.apigateway.exception.UserServiceUnavailableException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -53,6 +57,11 @@ public class RegistrationController {
         .bodyValue(createUserRequest)
         .retrieve()
         .bodyToMono(UserResponse.class)
+        .onErrorMap(
+            WebClientRequestException.class,
+            ex -> new UserServiceUnavailableException(
+                "User Service is unavailable", ex)
+        )
         .flatMap(response -> saveCredentials(request, response.getUserId()))
         .map(tokens -> ResponseEntity.status(201).body(tokens));
   }
@@ -70,6 +79,12 @@ public class RegistrationController {
         .bodyValue(credentialsRequest)
         .retrieve()
         .bodyToMono(Void.class)
+        .onErrorMap(
+            WebClientRequestException.class,
+            ex -> new AuthServiceUnavailableException(
+                "Auth Service is unavailable", ex
+            )
+        )
         .then(login(request))
         .onErrorResume(error -> rollbackUser(userId).then(Mono.error(error)));
   }

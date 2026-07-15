@@ -1,6 +1,8 @@
 package com.innowise.apigateway.exception.handler;
 
 import com.innowise.apigateway.dto.ErrorResponse;
+import com.innowise.apigateway.exception.AuthServiceUnavailableException;
+import com.innowise.apigateway.exception.UserServiceUnavailableException;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,24 @@ public class GlobalExceptionHandler {
     ErrorResponse response = new ErrorResponse(LocalDateTime.now(), ex.getStatusCode().value(), ex.getMessage());
 
     return ResponseEntity.status(ex.getStatusCode()).body(response);
+  }
+
+  @ExceptionHandler(AuthServiceUnavailableException.class)
+  public ResponseEntity<ErrorResponse> handleAuthServiceUnavailable(
+      AuthServiceUnavailableException ex) {
+
+    ErrorResponse response = new ErrorResponse(LocalDateTime.now(), 503, ex.getMessage());
+
+    return ResponseEntity.status(503).body(response);
+  }
+
+  @ExceptionHandler(UserServiceUnavailableException.class)
+  public ResponseEntity<ErrorResponse> handleUserServiceUnavailable(
+      UserServiceUnavailableException ex) {
+
+    ErrorResponse response = new ErrorResponse(LocalDateTime.now(), 503, ex.getMessage());
+
+    return ResponseEntity.status(503).body(response);
   }
 
   @ExceptionHandler(Exception.class)
